@@ -1,14 +1,29 @@
-from products import Product
+from products import Product, NonStockedProduct, LimitedProduct
+from promotions import PercentDiscount, SecondHalfPrice, ThirdOneFree
 from store import Store
 
-product_list = [
-    Product("MacBook Air M2", price=1450, quantity=100),
-    Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-    Product("Google Pixel 7", price=500, quantity=250)
-]
-best_buy = Store(product_list)
+def main():
+    """
+    Main function to run the Best Buy store application.
+    """
+    product_list = [
+        Product("MacBook Air M2", price=1450, quantity=100),
+        Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+        Product("Google Pixel 7", price=500, quantity=250),
+        NonStockedProduct("Windows License", price=125),
+        LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
+    ]
 
-def start(store):
+    second_half_price = SecondHalfPrice("Second Half Price")
+    third_one_free = ThirdOneFree("Third One Free")
+    thirty_percent = PercentDiscount("30% off", percent=30)
+
+    product_list[0].promotion = second_half_price
+    product_list[1].promotion = third_one_free
+    product_list[3].promotion = thirty_percent
+
+    best_buy = Store(product_list)
+
     while True:
         print("\nWelcome to Best Buy!")
         print("1. List all products in store")
@@ -18,19 +33,19 @@ def start(store):
         choice = input("Enter your choice: ")
         
         if choice == '1':
-            products = store.get_all_products()
+            products = best_buy.get_all_products()
             for product in products:
-                print(product.show())
+                print(product)
                 
         elif choice == '2':
-            total_quantity = store.get_total_quantity()
+            total_quantity = best_buy.get_total_quantity()
             print(f"Total amount in store: {total_quantity}")
             
         elif choice == '3':
             shopping_list = []
-            products = store.get_all_products()
+            products = best_buy.get_all_products()
             for i, product in enumerate(products):
-                print(f"{i+1}. {product.name} (Available: {product.get_quantity()})")
+                print(f"{i+1}. {product.name} (Available: {product.quantity})")
             while True:
                 product_choice = input("Enter product number (or 'done' to finish): ")
                 if product_choice.lower() == 'done':
@@ -48,7 +63,7 @@ def start(store):
             
             if shopping_list:
                 try:
-                    total_price = store.order(shopping_list)
+                    total_price = best_buy.order(shopping_list)
                     print(f"Order placed successfully! Total price: ${total_price}")
                 except Exception as e:
                     print(f"Error placing order: {e}")
@@ -63,4 +78,4 @@ def start(store):
             print("Invalid choice. Please try again.")
 
 if __name__ == "__main__":
-    start(best_buy)
+    main()

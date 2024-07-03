@@ -13,7 +13,7 @@ class Store:
     def get_total_quantity(self):
         total_quantity = 0  
         for product in self.products:
-            total_quantity += product.get_quantity()  
+            total_quantity += product.quantity 
         return total_quantity 
         
     def get_all_products(self):
@@ -29,6 +29,16 @@ class Store:
             total_price += product.buy(quantity)
         return total_price
 
+    def __contains__(self, product):
+        return product in self.products
+
+    def __add__(self, other):
+        combined_products = self.products + other.products
+        return Store(combined_products)
+
+    def __str__(self):
+        return '\n'.join(str(product) for product in self.products)
+
 if __name__ == "__main__":
     product_list = [
         Product("MacBook Air M2", price=1450, quantity=100),
@@ -43,4 +53,3 @@ if __name__ == "__main__":
 
     order_cost = store.order([(products[0], 1), (products[1], 2)])  
     print(f"Order cost: {order_cost} dollars.")
-
